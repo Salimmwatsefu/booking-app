@@ -9,6 +9,8 @@ function Navbar() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -62,18 +64,23 @@ function Navbar() {
 
         <div className="flex items-center gap-4">
           <div className="sm:flex sm:gap-4 ml-[135px] md:ml-0">
+            <Link to={'/login'}>
           <button
               className=" border border-white  px-7 py-2 text-sm font-medium text-white shadow rounded-3xl"
               
             >
               Login
             </button>
+            </Link>
+
+            <Link to={'/register'}>
             <button
               className=" bg-indigo-500  px-7 py-2 text-sm font-medium text-white shadow rounded-3xl"
               
             >
               Get Started
             </button>
+            </Link>
             
             
             
