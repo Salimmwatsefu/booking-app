@@ -16,11 +16,11 @@ function SignUp() {
 
   return (
     <div className="flex justify-center">
-      <div className=" bg-slate-100 w-1/2 h-screen">
+      <div className=" bg-slate-100 w-1/2 h-screen hidden sm:block">
         Booking IO
       </div>
-      <div className="w-1/2 flex justify-center">
-      <div className=" w-[370px] p-5 mt-10 h-[450px]">
+      <div className="sm:w-1/2 flex justify-center">
+      <div className=" sm:w-[370px] p-5 md:mt-10 mt-20 h-[450px]">
         <header className=" mb-5">
           <h1 className=" font-bold text-3xl">Create account</h1>
           <p className=" mt-5 text-gray-400">Welcome to Booking! Please enter your details</p>

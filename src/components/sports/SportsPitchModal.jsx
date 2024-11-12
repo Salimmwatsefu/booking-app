@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import usePitchBooking from '../../../hooks/usePitchBooking';
+
+
 
 const SportsPitchModal = ({ isOpen, onClose }) => {
   const [selectedPitch, setSelectedPitch] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
   const [name, setName] = useState('');
   const [schoolID, setSchoolID] = useState('');
   const [reason, setReason] = useState('');
-  
+  const [isFetching, setIsFetching] = useState(false);
+
+  const { availableSlots, error, fetchAvailableSlots, bookPitch, bookingStatus } = usePitchBooking();
+
+  // Fetch available slots when pitch and date are selected
+  useEffect(() => {
+    if (selectedPitch && selectedDate) {
+      setIsFetching(true);
+      fetchAvailableSlots(selectedPitch, selectedDate)
+        .finally(() => setIsFetching(false)); // Reset fetching flag after the fetch
+    }
+  }, [selectedPitch, selectedDate, fetchAvailableSlots]);
+
   // List of sports pitches
   const pitches = [
     'Basketball',
@@ -16,16 +32,6 @@ const SportsPitchModal = ({ isOpen, onClose }) => {
     'Swimming Pool',
     'Taekwondo',
   ];
-
-  // Mock state for booked slots (in a real app, this data would come from a database)
-  const bookedSlots = {
-    Basketball: ['Morning'],
-    'Hockey Pitch': [],
-    'Football Pitch': ['Afternoon'],
-    'Rugby Pitch': [],
-    'Swimming Pool': [],
-    Taekwondo: ['Morning', 'Afternoon'],
-  };
 
   // Handle pitch selection
   const handlePitchSelect = (pitch) => {
@@ -38,15 +44,32 @@ const SportsPitchModal = ({ isOpen, onClose }) => {
     setSelectedSlot(slot);
   };
 
+  // Handle date change
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
+
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Selected Pitch:', selectedPitch);
-    console.log('Selected Slot:', selectedSlot);
-    console.log('Name:', name);
-    console.log('School ID:', schoolID);
-    console.log('Reason for Booking:', reason);
-    onClose();
+    const bookingData = {
+      name,
+      school_id: schoolID,
+      reason,
+      pitch_name: selectedPitch,
+      slot: selectedSlot,
+      date: selectedDate,
+    };
+
+    const response = await bookPitch(bookingData);
+    if(response){
+      console.log('Booking Success:', response);
+      alert("Booking Successful")
+      onClose();  // Close modal on success
+    } else {
+      console.error('Booking failed');
+      alert("Booking failed: " + error || 'Unknown error');
+    }
   };
 
   if (!isOpen) return null;
@@ -54,12 +77,16 @@ const SportsPitchModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-black opacity-90" onClick={onClose} />
-      <div className="bg-white p-6 rounded-lg z-10 w-[700px]  shadow-lg relative max-h-[80vh] overflow-y-auto">
+      <div className="bg-white p-6 rounded-lg z-10 md:w-[700px] w-[380px] shadow-lg relative max-h-[80vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Select Sports Pitch</h2>
-        
+
+        {/* Error Message */}
+        {error && <p className="text-red-500">{error}</p>}
+        {bookingStatus && !error && <p className="text-green-500">{bookingStatus}</p>}
+
         <form onSubmit={handleSubmit}>
           {/* Sports pitch selection */}
-          <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="grid md:grid-cols-3 grid-cols-2 gap-4 mb-4">
             {pitches.map((pitch) => (
               <button
                 key={pitch}
@@ -74,43 +101,57 @@ const SportsPitchModal = ({ isOpen, onClose }) => {
             ))}
           </div>
 
-          {/* Time slot selection */}
-          {selectedPitch && (
-            <div className="mb-4">
-              <h3 className="text-md font-semibold mb-2">Select a Time Slot</h3>
-              {['Morning', 'Afternoon'].map((slot) => {
-                const isBooked = bookedSlots[selectedPitch]?.includes(slot);
-                return (
+          {/* Date selection */}
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-1" htmlFor="date">Select a Date</label>
+            <input
+              type="date"
+              id="date"
+              value={selectedDate}
+              onChange={handleDateChange}
+              className="w-full border border-gray-300 rounded-lg p-3"
+              required
+            />
+          </div>
+
+          {/* Slot selection */}
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-1">Select a Time Slot</label>
+            {isFetching ? (
+              <p>Loading available slots...</p>
+            ) : availableSlots.length > 0 ? (
+              <div className="grid grid-cols-3 gap-4">
+                {availableSlots.map((slot) => (
                   <button
                     key={slot}
                     type="button"
-                    className={`w-full text-left border border-gray-300 rounded-lg p-3 mb-2 ${
-                      isBooked ? 'bg-gray-300 cursor-not-allowed' : 'hover:bg-indigo-100'
-                    } ${selectedSlot === slot && !isBooked ? 'bg-indigo-200 font-semibold' : ''}`}
-                    onClick={() => !isBooked && handleSlotSelect(slot)}
-                    disabled={isBooked}
+                    className={`w-full text-left border border-gray-300 rounded-lg p-3 hover:bg-indigo-100 ${
+                      selectedSlot === slot ? 'bg-indigo-200 font-semibold' : ''
+                    }`}
+                    onClick={() => handleSlotSelect(slot)}
                   >
-                    {slot} ({slot === 'Morning' ? '8 AM - 1 PM' : '2 PM - 7 PM'})
-                    {isBooked && ' - Already Booked'}
+                    {slot}
                   </button>
-                );
-              })}
-            </div>
-          )}
+                ))}
+              </div>
+            ) : (
+              <p>No available slots for the selected date and pitch.</p>
+            )}
+          </div>
 
-          {/* User details */}
-          <div className='flex gap-10'>
+          {/* Booking details */}
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1" htmlFor="name">Name</label>
+            <label className="block text-gray-700 mb-1" htmlFor="name">Your Name</label>
             <input
               type="text"
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full border border-gray-300 rounded-lg p-3"
               required
             />
           </div>
+
           <div className="mb-4">
             <label className="block text-gray-700 mb-1" htmlFor="schoolID">School ID</label>
             <input
@@ -118,18 +159,18 @@ const SportsPitchModal = ({ isOpen, onClose }) => {
               id="schoolID"
               value={schoolID}
               onChange={(e) => setSchoolID(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full border border-gray-300 rounded-lg p-3"
               required
             />
           </div>
-          </div>
+
           <div className="mb-4">
             <label className="block text-gray-700 mb-1" htmlFor="reason">Reason for Booking</label>
             <textarea
               id="reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full border border-gray-300 rounded-lg p-3"
               required
             />
           </div>
@@ -137,26 +178,11 @@ const SportsPitchModal = ({ isOpen, onClose }) => {
           {/* Submit button */}
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-500 transition duration-200"
-            disabled={!selectedPitch || !selectedSlot}
+            className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Book Pitch
           </button>
         </form>
-
-        {/* Display selected pitch and slot */}
-        <div className="mt-4">
-          {selectedPitch && (
-            <div className="text-gray-700">
-              <p className="font-semibold">Selected Pitch: {selectedPitch}</p>
-              <p className="font-semibold">Selected Time Slot: {selectedSlot}</p>
-            </div>
-          )}
-        </div>
-
-        <button className="mt-4 text-indigo-600" onClick={onClose}>
-          Close
-        </button>
       </div>
     </div>
   );

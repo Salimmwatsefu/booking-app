@@ -11,16 +11,16 @@ function LogIn() {
 
   return (
     <div className="flex justify-center">
-      <div className=" bg-slate-100 w-1/2 h-screen">
+      <div className=" bg-slate-100 w-1/2 h-screen hidden md:block">
       <div>
         <h1>Booking IO</h1>
         </div>
       </div>
-      <div className="w-1/2 flex justify-center">
-      <div className=" w-[370px] p-5 mt-20 h-[450px]">
+      <div className="md:w-1/2 flex justify-center">
+      <div className=" md:w-[370px] p-5 mt-20 h-[450px]">
       
         <header className=" mb-5">
-          <h1 className=" font-bold text-3xl">Welcome back</h1>
+          <h1 className=" font-bold text-3xl ">Welcome back</h1>
           <p className=" mt-5 text-gray-400">Welcome back! Please enter your details</p>
         </header>
         {errorMessage && <p className="text-red-500 my-3 text-sm">{errorMessage}</p>}

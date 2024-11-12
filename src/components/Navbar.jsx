@@ -29,7 +29,6 @@ function Navbar() {
       <div className="flex-1 md:flex md:items-center md:gap-12 flex">
         <Link to={"/"}>
         <div className="  flex w-20">
-          <img src="tepa-logo.avif" alt="logo" className='w-full h-full' />
           <h1 className=' font-bold text-2xl text-indigo-400 pl-1'>Booking.io</h1>
         </div>
         </Link>
@@ -47,7 +46,7 @@ function Navbar() {
             </li>
             </Link>
 
-            <Link to={'/about'}>
+            <Link to={'/services'}>
 
             <li className='text-white transition  hover:text-white/75'>
               
@@ -62,8 +61,8 @@ function Navbar() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-4">
-          <div className="sm:flex sm:gap-4 ml-[135px] md:ml-0">
+        <div className="flex items-center gap-4 overflow-x-hidden">
+          <div className="sm:flex sm:gap-4 ml-[155px] md:ml-0">
             <Link to={'/login'}>
           <button
               className=" border border-white  px-7 py-2 text-sm font-medium text-white shadow rounded-3xl"
@@ -75,7 +74,7 @@ function Navbar() {
 
             <Link to={'/register'}>
             <button
-              className=" bg-indigo-500  px-7 py-2 text-sm font-medium text-white shadow rounded-3xl"
+              className=" bg-indigo-500  px-7 py-2 text-sm font-medium text-white shadow rounded-3xl hidden sm:block"
               
             >
               Get Started
@@ -86,69 +85,8 @@ function Navbar() {
             
           </div>
 
-          <div className="block md:hidden bg-white rounded">
-          {isMenuOpen ? (
-              <HiX onClick={toggleMenu} className="text-2xl" />
-            ) : (
-              <HiMenu onClick={toggleMenu} className="text-2xl" />
-            )}
-           
-          </div>
-
-          {isMenuOpen && (
-          <div className="md:hidden absolute top-11 right-0 w-full p-4 z-[900px] ">
-            <ul className="bg-black px-3 py-2 gap-10  ">
-
-<Link to={'/'} onClick={closeMobileMenu} >
-<li className="text-white transition p-3 hover:text-white/75 hover:bg-pink-500">
-  
-    Home
-  
-</li>
-</Link>
-
-<Link to={'/about'} onClick={closeMobileMenu}>
-
-<li className='text-white transition  p-3 hover:text-white/75 hover:bg-pink-500'>
-  
-    What we do
-
-</li>
-</Link>
-
-<Link to={'/events'} onClick={closeMobileMenu}>
-
-<li className="text-white transition p-3  hover:text-white/75 hover:bg-pink-500">
-  
-    Events
- 
-</li>
-</Link>
-
-<Link to={'/blog'} onClick={closeMobileMenu}>
-
-<li className="text-white transition p-3  hover:text-white/75 hover:bg-pink-500">
-  
-    Blog
- 
-</li>
-</Link>
-
-<Link to={'/contacts'} onClick={closeMobileMenu}>
-
-<li className="text-white transition p-3 hover:text-white/75 hover:bg-pink-500">
-  
-    Contact
-  
-</li>
-</Link>
-
-
-</ul>
-            
-          </div>
-        )}
-
+         
+          
 
         </div>
       </div>

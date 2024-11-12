@@ -34,9 +34,9 @@ const TransportModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50 ">
       <div className="absolute inset-0 bg-black opacity-90" onClick={handleClose} />
-      <div className="bg-gray-200 p-5 rounded-md z-10 max-h-[80vh] overflow-y-auto">
+      <div className="bg-gray-200 p-5 rounded-md z-10 max-h-[80vh] w-[380px] md:w-[450px] overflow-y-auto">
         {!isFormVisible ? (
           <>
             <h2 className="text-2xl font-bold mb-8">Select Transport Type</h2>

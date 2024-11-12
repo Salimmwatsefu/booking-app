@@ -1,13 +1,13 @@
 import React from 'react'
-import Section1 from './Section1'
-import Section2 from './Section2'
 import Hero from './Hero'
+import Navbar from '../Navbar'
 
 function Home() {
   return (
     <div>
+       <Navbar />
       <Hero />
-      <Section1 />
+    
     </div>
   )
 }
