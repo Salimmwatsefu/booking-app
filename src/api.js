@@ -11,4 +11,6 @@ export const API_ROUTES = {
     BOOK_PITCH: `${API_BASE_URL}/book_pitch`,  
     BOOK_APPOINTMENT: `${API_BASE_URL}/book_appointment`, 
     AVAILABLE_APPOINTMENTS: `${API_BASE_URL}/available_appointments`,
+    LOGIN: `${API_BASE_URL}/login`,
+    REGISTER: `${API_BASE_URL}/signup`
 };

@@ -3,6 +3,7 @@ import TransportModal from '../transport/TransportModal';
 import VenueModal from '../venue/VenueModal';
 import SportsPitchModal from '../sports/SportsPitchModal';
 import AppointmentsModal from '../appointments/AppointmentsModal';
+import BackButton from '../BackButton';
 
 function Section1() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -31,6 +32,10 @@ function Section1() {
 
   return (
     <div className='mb-20'>
+
+      <div className='absolute top-5 left-10'>
+        <BackButton />
+      </div>
       <h1 className='mt-14 font-bold sm:ml-10 text-center text-3xl text-indigo-700'>What do you want to book</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:mx-3 mx-1 mt-20">
         {cards.map((card, index) => (
